@@ -1,0 +1,1 @@
+- 运行环境为Ubuntu 20.04，apt install qemu-system-misc安装的qemu-system-riscv64版本(4.2.1)能成功运行，但qemu 6.x版本运行不了

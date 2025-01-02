@@ -695,3 +695,25 @@ procdump(void)
     printf("\n");
   }
 }
+
+/**
+ * 计算当前系统中处于使用状态的进程数量。
+ * 
+ * 遍历进程数组，对每个进程结构体进行检查。
+ * 使用互斥锁确保在检查进程状态时不会被其他线程中断。
+ * 
+ * @return uint64 返回系统中处于使用状态的进程数量。
+ */
+uint64
+proc_num(void){
+  struct proc *p;
+  uint64 num = 0;
+  for(p = proc; p < &proc[NPROC]; p++) {
+    acquire(&p->lock);
+    if(p->state != UNUSED) {
+      num++;
+    }
+    release(&p->lock);
+  }
+  return num;
+}

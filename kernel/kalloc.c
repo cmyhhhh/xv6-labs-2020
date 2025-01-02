@@ -80,3 +80,28 @@ kalloc(void)
     memset((char*)r, 5, PGSIZE); // fill with junk
   return (void*)r;
 }
+
+/**
+ * 计算当前系统中的空闲内存总量。
+ * 
+ * 该函数通过遍历内存空闲链表来计算空闲内存的数量，并返回总的空闲内存大小。
+ * 它首先获取内存管理锁，以防止在遍历过程中内存分配或释放导致链表变化。
+ * 遍历结束后释放锁，并返回计算得到的空闲内存总量。
+ * 
+ * @return 返回当前系统的空闲内存总量，单位是字节。
+ */
+uint64
+freemem(void){
+  struct run *r;
+  uint64 freemem_num = 0;
+
+  acquire(&kmem.lock);
+  r = kmem.freelist;
+  while(r){
+    freemem_num++;
+    r = r->next;
+  }
+  release(&kmem.lock);
+
+  return freemem_num*PGSIZE;
+}

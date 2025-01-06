@@ -132,3 +132,15 @@ printfinit(void)
   initlock(&pr.lock, "pr");
   pr.locking = 1;
 }
+
+void
+backtrace(void)
+{
+  uint64 fp = r_fp();
+  uint64 page_top = PGROUNDUP(fp);
+  uint64 page_bottom = PGROUNDDOWN(fp);
+  while(fp >= page_bottom && fp < page_top){
+    printf("%p\n", *((uint64*)(fp-8)));
+    fp = *((uint64*)(fp-16));
+  }
+}

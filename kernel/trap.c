@@ -65,6 +65,22 @@ usertrap(void)
     intr_on();
 
     syscall();
+  } else if(r_scause() == 13 || r_scause() == 15){
+    // printf("usertrap(): fault %p %p\n", r_scause(), r_stval());
+    uint64 va = r_stval();
+    char *pa = kalloc();
+    if(pa == 0){
+      printf("usertrap(): pagefault kalloc failed\n");
+      p->killed = 1;
+    } else{
+      memset(pa, 0, PGSIZE);
+      if(mappages(p->pagetable, PGROUNDDOWN(va), PGSIZE, (uint64)pa, PTE_W|PTE_R|PTE_U) != 0){
+        kfree(pa);
+        printf("usertrap(): pagefault unable to map page\n");
+        p->killed = 1;
+      }
+    }
+
   } else if((which_dev = devintr()) != 0){
     // ok
   } else {

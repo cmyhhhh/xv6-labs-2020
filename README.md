@@ -1,1 +1,2 @@
 - 运行环境为Ubuntu 20.04，apt install qemu-system-misc安装的qemu-system-riscv64版本(4.2.1)能成功运行，但qemu 6.x版本运行不了
+- xv6学习和实验笔记博客地址:https://blog.csdn.net/qq_45806499/article/details/144804405
